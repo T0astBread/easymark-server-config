@@ -1,0 +1,56 @@
+#!/bin/bash
+source framework/install
+
+if ! getent group caddy > /dev/null; then
+	print_changed "caddy group does not exist - creating..."
+	groupadd --system caddy
+fi
+
+if ! id -u caddy; then
+	print_changed "caddy user does not exist - creating..."
+	useradd --system \
+		--gid caddy \
+		--create-home \
+		--home-dir /var/lib/caddy \
+		--shell /usr/sbin/nologin \
+		--comment "Caddy web server" \
+		caddy
+fi
+
+if ! which caddy > /dev/null; then
+	scripts/upgrade-caddy
+fi
+
+cp scripts/upgrade-caddy /etc/cron.daily
+
+mkdir -p /etc/caddy
+if differ etc/caddy/caddy.service /etc/systemd/system/caddy.service; then
+	print_changed "Caddy unit file has changed - updating..."
+	cp etc/caddy/caddy.service /etc/systemd/system/caddy.service
+	systemctl daemon-reload
+fi
+
+etc/caddy/Caddyfile > .tmp-caddyfile
+if differ .tmp-caddyfile /etc/caddy/Caddyfile; then
+	print_changed "Caddyfile has changed"
+	cp .tmp-caddyfile /etc/caddy/Caddyfile
+	if systemctl is-active caddy.service > /dev/null; then
+		systemctl restart caddy.service
+	fi
+fi
+rm .tmp-caddyfile
+chown -R caddy:caddy /etc/caddy
+chmod ug=rx,o= /etc/caddy
+chmod ug=r,o= /etc/caddy/Caddyfile
+
+echo -n "caddy.service "
+if ! systemctl is-active caddy.service; then
+	print_changed "caddy.service is not active - starting..."
+	systemctl start caddy.service
+fi
+
+echo -n "caddy.service "
+if ! systemctl is-enabled caddy.service; then
+	print_changed "caddy.service is not enabled on startup - enabling..."
+	systemctl enable caddy.service
+fi
