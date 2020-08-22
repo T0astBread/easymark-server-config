@@ -1,0 +1,19 @@
+[alias]
+	s = status
+	a = add
+	d = diff
+	c = commit
+	ch = checkout
+	p = push
+	d = diff
+	l = log
+	b = branch
+	st = stash
+	cl = clean
+	pl = pull
+	f = fetch
+	w = whatchanged
+	ls = log --stat
+	r = rebase
+[pull]
+	ff = only

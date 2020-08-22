@@ -36,4 +36,5 @@ print_footer $H_ROOT_SECTION
 
 print_header $H_DOTFILES
 cp_dot config.fish .config/fish/config.fish
+cp_dot gitconfig .gitconfig
 print_footer $H_DOTFILES
