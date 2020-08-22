@@ -1,0 +1,9 @@
+#!/bin/bash
+source framework/install
+
+if differ etc/sudoers /etc/sudoers; then
+	print_changed "Sudoers has changed - updating..."
+	cp etc/sudoers /etc/sudoers
+else
+	echo "Sudoers hasn't changed"
+fi

@@ -1,0 +1,17 @@
+#!/bin/bash
+source framework/install
+
+# Install autoinstalled packages
+non_installed=$(./lspack non-installed | xargs)
+if [[ $(echo "$non_installed" | wc -w) -ne 0 ]]; then
+	print_changed "Some packages are not installed: $non_installed"
+	if has_internet; then
+		echo "Installing..."
+		apt_update
+		apt-get install -y $non_installed
+	else
+		echo "Not installing autoinstall packages - no internet"
+	fi
+else
+	echo "Autoinstall packages are all installed"
+fi

@@ -1,0 +1,106 @@
+#!/bin/bash
+set -euo pipefail
+
+H_INTERNET_CONN="12;Internet Connection"
+home=/home/admin
+
+tput init
+
+function print_header {
+	local color
+	local text
+
+	color=$(echo "$@" | cut -d ";" -f 1)
+	text=$(echo "$@" | cut -d ";" -f 2)
+
+	tput bold
+	tput setab "$color"
+	tput setaf 0
+	echo
+	echo
+	echo "--- $text ---"
+	echo
+	tput sgr0
+}
+
+function print_footer {
+	local color
+	local text
+
+	color=$(echo "$@" | cut -d ";" -f 1)
+	text=$(echo "$@" | cut -d ";" -f 2)
+
+	tput setaf "$color"
+	echo
+	echo "--- End of $text ---"
+	echo
+	echo
+	tput sgr0
+}
+
+function print_changed {
+	tput bold
+	tput setaf 9
+	echo "$1"
+	tput sgr0
+}
+
+function cp_dot {
+	home_path=$home/$2
+	dot_path=dotfiles/$1
+	home_path_dir=$(dirname "$home_path")
+	has_changed=0
+	if [[ ! -d "$home_path_dir" ]]; then
+		has_changed=1
+		mkdir -p "$home_path_dir"
+		[[ $EUID -eq 0 ]] && chown --recursive admin:admin "$home_path_dir"
+	elif [[ ! -f "$home_path" ]]; then
+		has_changed=1
+	elif differ "$home_path" "$dot_path"; then
+		has_changed=1
+	fi
+	if [[ $has_changed -eq 1 ]]; then
+		print_changed "$1 has changed - copying..."
+		cp "$dot_path" "$home_path"
+	fi
+	chown admin:admin $home_path
+}
+
+function differ {
+	if cmp --silent "$1" "$2"; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+has_apt_updated=0
+function apt_update {
+	if [[ $has_apt_updated -eq 0 ]]; then
+		print_changed "APT-updating..."
+		apt-get update
+		has_apt_updated=1
+	else
+		echo "Skipping APT-update because it has already been done before in this script"
+	fi
+}
+
+m_has_internet="undef"
+function has_internet {
+	if [[ $m_has_internet = "undef" ]]; then
+		print_header "$H_INTERNET_CONN"
+
+		set +e
+		timeout 5 curl https://duckduckgo.com -s -o /dev/null
+		m_has_internet=$?
+		set -e
+
+		echo "Has internet: $m_has_internet (0 = yes)"
+		print_footer "$H_INTERNET_CONN"
+	fi
+	if [[ $m_has_internet -eq 0 ]]; then
+		return 0
+	else
+		return 1
+	fi
+}

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+function read_packlist {
+	grep -vE "^(#|$)" | sort | uniq
+}
+
+function read_packlists {
+	cat "$@" 2>/dev/null | read_packlist
+}
+
+
+function autoinstalled {
+	read_packlists packages/{"$(hostname)".autoinstall,autoinstall}
+}
+
+function ignored {
+	read_packlists packages/{"$(hostname)".ignore,gce-buster-default.ignore,ignore}
+}
+
+
+function installed {
+	apt-mark showmanual | read_packlist
+}
+
+
+function combine {
+	cat <($1) <($2) | uniq | sort
+}
+
+
+function list_untracked {
+	comm -13 <(combine autoinstalled ignored) <(installed)
+}
+
+function list_non_installed {
+	comm -13 <(combine installed ignored) <(autoinstalled)
+}
+
+
+case "$1" in
+"untracked")
+	list_untracked
+	;;
+"non-installed")
+	list_non_installed
+	;;
+esac
