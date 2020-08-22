@@ -38,11 +38,13 @@ else
 		echo "EasyMark unit file hasn't changed"
 	fi
 
+	echo -n "easymark.service "
 	if ! systemctl is-active easymark; then
 		print_changed "EasyMark service is not active - starting..."
 		systemctl start easymark
 	fi
 
+	echo -n "easymark.service "
 	if ! systemctl is-enabled easymark; then
 		print_changed "EasyMark service is not enabled on startup - enabling..."
 		systemctl enable easymark

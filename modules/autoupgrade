@@ -1,19 +1,23 @@
 #!/bin/bash
 source framework/install
 
+echo -n "apt-daily.timer "
 if ! systemctl is-active apt-daily.timer; then
 	print_changed "apt-daily.timer is not active - starting..."
 	systemctl start apt-daily.timer
 fi
+echo -n "apt-daily-upgrade.timer "
 if ! systemctl is-active apt-daily-upgrade.timer; then
 	print_changed "apt-daily-upgrade.timer is not active - starting..."
 	systemctl start apt-daily-upgrade.timer
 fi
 
+echo -n "apt-daily.timer "
 if ! systemctl is-enabled apt-daily.timer; then
 	print_changed "apt-daily.timer is not enabled on startup - enabling..."
 	systemctl enable apt-daily.timer
 fi
+echo -n "apt-daily-upgrade.timer "
 if ! systemctl is-enabled apt-daily-upgrade.timer; then
 	print_changed "apt-daily-upgrade.timer is not enabled on startup - enabling..."
 	systemctl enable apt-daily-upgrade.timer
