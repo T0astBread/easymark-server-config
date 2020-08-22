@@ -1,3 +1,6 @@
+set -x PATH $PATH \
+/usr/local/lib/easymark/bin
+
 set -x EDITOR (which micro)
 set -x VISUAL $EDITOR
 

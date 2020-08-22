@@ -1,0 +1,30 @@
+#!/bin/bash
+source framework/install
+
+if [[ ! -f easymark.tar ]]; then
+	tput setaf 1
+	echo "easymark.tar is not present - nothing to deploy"
+	exit 1
+else
+	has_changed=0
+	hash="$(sha256sum easymark.tar)"
+	if [[ ! -f .last-deployment-hash ]]; then
+		has_changed=1
+	else
+		last_hash="$(cat .last-deployment-hash)"
+		[[ "$hash" != "$last_hash" ]] && has_changed=1
+	fi
+	if [[ $has_changed -ne 0 ]]; then
+		print_changed "EasyMark binary has changed - updating..."
+
+		rm -rf /usr/local/lib/easymark
+		mkdir -p /usr/local/lib/easymark
+		tar -xf easymark.tar -C /usr/local/lib/easymark
+		mv /usr/local/lib/easymark/easymark-*/* /usr/local/lib/easymark
+		rmdir /usr/local/lib/easymark/easymark-*
+
+		echo "$hash" > .last-deployment-hash
+	else
+		echo "EasyMark binary is installed"
+	fi
+fi

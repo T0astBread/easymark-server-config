@@ -5,6 +5,7 @@ source framework/install
 # Section headers
 H_ROOT_SECTION="9;Root Section"
 H_APT_PACKAGES="3;APT Packages"
+H_EASYMARK="4;EasyMark"
 H_STARTUP_SERVICES="3;Startup Services"
 H_DOTFILES="13;Dotfiles"
 
@@ -14,6 +15,10 @@ if [[ $EUID -eq 0 ]]; then
 	print_header $H_APT_PACKAGES
 	modules/autoinstall
 	print_footer $H_APT_PACKAGES
+
+	print_header $H_EASYMARK
+	modules/easymark
+	print_footer $H_EASYMARK
 	
 	print_header $H_STARTUP_SERVICES
 	modules/sudoers
