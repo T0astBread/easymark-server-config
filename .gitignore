@@ -1,3 +1,4 @@
+.env
 .transfer
 easymark.tar
 .last-deployment-hash

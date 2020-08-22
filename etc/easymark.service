@@ -1,3 +1,7 @@
+#!/bin/bash
+source .env
+
+cat <<EOF
 [Unit]
 Description=EasyMark server
 After=network.target
@@ -7,6 +11,8 @@ Type=simple
 Restart=always
 ExecStart=/usr/local/lib/easymark/bin/easymark
 WorkingDirectory=/var/lib/easymark
+Environment="TZ=$TIMEZONE"
 
 [Install]
 WantedBy=multi-user.target
+EOF

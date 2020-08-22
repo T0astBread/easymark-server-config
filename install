@@ -12,6 +12,8 @@ H_DOTFILES="13;Dotfiles"
 print_header $H_ROOT_SECTION
 	
 if [[ $EUID -eq 0 ]]; then
+	ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+
 	print_header $H_APT_PACKAGES
 	modules/autoinstall
 	print_footer $H_APT_PACKAGES

@@ -31,13 +31,16 @@ else
 	ln -sf /usr/local/lib/easymark/bin/easymark /usr/local/bin/easymark
 	mkdir -p /var/lib/easymark
 
-	if differ etc/easymark.service /etc/systemd/system/easymark.service; then
+	etc/easymark.service > .tmp-easymark-service
+	if differ .tmp-easymark-service /etc/systemd/system/easymark.service; then
 		print_changed "EasyMark unit file has changed - updating..."
-		cp etc/easymark.service /etc/systemd/system/easymark.service
+		cp .tmp-easymark-service /etc/systemd/system/easymark.service
 		systemctl daemon-reload
+		systemctl stop easymark.service
 	else
 		echo "EasyMark unit file hasn't changed"
 	fi
+	rm .tmp-easymark-service
 
 	echo -n "easymark.service "
 	if ! systemctl is-active easymark; then
