@@ -1,7 +1,9 @@
 # Terminal
 fish
 micro
+git
 rsync
+netcat-openbsd
 
 # EasyMark
 openjdk-11-jre-headless
