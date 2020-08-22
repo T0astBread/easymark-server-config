@@ -28,6 +28,7 @@ else
 		echo "EasyMark binary is installed"
 	fi
 
+	ln -sf /usr/local/lib/easymark/bin/easymark /usr/local/bin/easymark
 	mkdir -p /var/lib/easymark
 
 	if differ etc/easymark.service /etc/systemd/system/easymark.service; then
