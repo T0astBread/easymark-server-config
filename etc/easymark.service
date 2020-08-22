@@ -1,0 +1,12 @@
+[Unit]
+Description=EasyMark server
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/local/lib/easymark/bin/easymark
+WorkingDirectory=/var/lib/easymark
+
+[Install]
+WantedBy=multi-user.target

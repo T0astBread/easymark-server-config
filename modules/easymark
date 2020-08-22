@@ -27,4 +27,24 @@ else
 	else
 		echo "EasyMark binary is installed"
 	fi
+
+	mkdir -p /var/lib/easymark
+
+	if differ etc/easymark.service /etc/systemd/system/easymark.service; then
+		print_changed "EasyMark unit file has changed - updating..."
+		cp etc/easymark.service /etc/systemd/system/easymark.service
+		systemctl daemon-reload
+	else
+		echo "EasyMark unit file hasn't changed"
+	fi
+
+	if ! systemctl is-active easymark; then
+		print_changed "EasyMark service is not active - starting..."
+		systemctl start easymark
+	fi
+
+	if ! systemctl is-enabled easymark; then
+		print_changed "EasyMark service is not enabled on startup - enabling..."
+		systemctl enable easymark
+	fi
 fi
