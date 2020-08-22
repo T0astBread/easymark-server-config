@@ -7,6 +7,8 @@ Description=EasyMark server
 After=network.target
 
 [Service]
+User=easymark
+Group=easymark
 Type=simple
 Restart=always
 ExecStart=/usr/local/lib/easymark/bin/easymark

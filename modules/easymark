@@ -1,6 +1,24 @@
 #!/bin/bash
 source framework/install
 
+
+if ! getent group easymark > /dev/null; then
+	print_changed "easymark group does not exist - creating..."
+	groupadd --system easymark
+fi
+
+if ! id -u easymark; then
+	print_changed "easymark user does not exist - creating..."
+	useradd --system \
+		--gid easymark \
+		--create-home \
+		--home-dir /var/lib/easymark \
+		--shell /usr/sbin/nologin \
+		--comment "EasyMark server" \
+		easymark
+fi
+
+
 if [[ ! -f easymark.tar ]]; then
 	tput setaf 1
 	echo "easymark.tar is not present - nothing to deploy"
@@ -29,7 +47,6 @@ else
 	fi
 
 	ln -sf /usr/local/lib/easymark/bin/easymark /usr/local/bin/easymark
-	mkdir -p /var/lib/easymark
 
 	etc/easymark.service > .tmp-easymark-service
 	if differ .tmp-easymark-service /etc/systemd/system/easymark.service; then
