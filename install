@@ -21,12 +21,15 @@ if [[ $EUID -eq 0 ]]; then
 	print_header $H_EASYMARK
 	modules/easymark
 	print_footer $H_EASYMARK
-	
+
 	print_header $H_STARTUP_SERVICES
 	modules/sudoers
+
 	echo "Locking root..."
 	passwd -l root
+
 	chsh -s /usr/bin/fish admin
+
 	modules/autoupgrade
 	print_footer $H_STARTUP_SERVICES
 else
