@@ -41,6 +41,10 @@ else
 		mv /usr/local/lib/easymark/easymark-*/* /usr/local/lib/easymark
 		rmdir /usr/local/lib/easymark/easymark-*
 
+		if systemctl is-active easymark > /dev/null; then
+			systemctl restart easymark
+		fi
+
 		echo "$hash" > .last-deployment-hash
 	else
 		echo "EasyMark binary is installed"
