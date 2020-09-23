@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+source framework/install
+
+if differ etc/sshd_config /etc/ssh/sshd_config; then
+	print_changed "sshd_config has changed - updating..."
+	cp etc/sshd_config /etc/ssh/sshd_config
+	chown root:root etc/sshd_config
+	chmod u=rw,go=r /etc/ssh/sshd_config
+
+	if systemctl is-active ssh.service > /dev/null; then
+		systemctl restart ssh.service
+	fi
+else
+	echo "sshd_config hasn't changed"
+fi
+
+echo -n "ssh.service "
+if ! systemctl is-active ssh.service; then
+	print_changed "ssh.service is not active - starting..."
+	systemctl start ssh.service
+fi
+
+echo -n "ssh.service "
+if ! systemctl is-enabled ssh.service; then
+	print_changed "ssh.service is not enabled on startup - enabling..."
+	systemctl enable ssh.service
+fi
