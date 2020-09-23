@@ -9,10 +9,10 @@ To                         Action      From
 --                         ------      ----
 80/tcp                     ALLOW       Anywhere                  
 443/tcp                    ALLOW       Anywhere                  
-22/tcp                     ALLOW       Anywhere                  
+8437/tcp                   ALLOW       Anywhere                  
 80/tcp (v6)                ALLOW       Anywhere (v6)             
 443/tcp (v6)               ALLOW       Anywhere (v6)             
-22/tcp (v6)                ALLOW       Anywhere (v6)             "
+8437/tcp (v6)              ALLOW       Anywhere (v6)             "
 
 if [[ "$ufw_status" = "$ufw_configured_status" ]]; then
 	echo "ufw is configured"
@@ -34,6 +34,6 @@ Configuring ufw..."
 	ufw --force reset
 	ufw allow http
 	ufw allow https
-	ufw allow ssh
+	ufw allow 8437/tcp
 	ufw --force enable
 fi
