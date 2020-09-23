@@ -31,6 +31,7 @@ if [[ $EUID -eq 0 ]]; then
 	chsh -s /usr/bin/fish admin
 
 	modules/autoupgrade
+	modules/ufw
 	modules/caddy
 	print_footer $H_STARTUP_SERVICES
 else

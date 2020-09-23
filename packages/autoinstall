@@ -6,5 +6,8 @@ tree
 rsync
 netcat-openbsd
 
+# Services
+ufw
+
 # EasyMark
 openjdk-11-jre-headless
