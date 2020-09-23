@@ -2,8 +2,38 @@
 set -euo pipefail
 source framework/install
 
-ufw --force reset
-ufw allow http
-ufw allow https
-ufw allow ssh
-ufw --force enable
+ufw_status="$(ufw status)"
+ufw_configured_status="Status: active
+
+To                         Action      From
+--                         ------      ----
+80/tcp                     ALLOW       Anywhere                  
+443/tcp                    ALLOW       Anywhere                  
+22/tcp                     ALLOW       Anywhere                  
+80/tcp (v6)                ALLOW       Anywhere (v6)             
+443/tcp (v6)               ALLOW       Anywhere (v6)             
+22/tcp (v6)                ALLOW       Anywhere (v6)             "
+
+if [[ "$ufw_status" = "$ufw_configured_status" ]]; then
+	echo "ufw is configured"
+else
+	print_changed "ufw configuration has changed;
+Captured configuration:
+
+$ufw_status
+
+Expected:
+
+$ufw_configured_status
+
+IF THIS HAPPENED WITHOUT AN ACTION FROM YOU, SOME-
+ONE MIGHT HAVE UNAUTHORIZED ACCESS TO THE SYSTEM.
+
+Configuring ufw..."
+
+	ufw --force reset
+	ufw allow http
+	ufw allow https
+	ufw allow ssh
+	ufw --force enable
+fi
