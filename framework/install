@@ -104,3 +104,35 @@ function has_internet {
 		return 1
 	fi
 }
+
+function user_shell {
+	if [[ $EUID -eq 0 ]]; then
+		su admin -c "bash -c \"$@\""
+	else
+		bash -c "$@"
+	fi
+}
+
+function user_exists {
+	user_name="$1"
+	creation_options="${@:2}"
+	if ! id -u "$user_name" > /dev/null; then
+		print_changed "$user_name user does not exist - creating..."
+		useradd $creation_options "$user_name"
+	fi
+}
+
+function group_exists {
+	group_name="$1"
+	creation_options="${@:2}"
+	if ! getent group "$group_name" > /dev/null; then
+		print_changed "$group_name group does not exist - creating..."
+		groupadd $creation_options "$group_name"
+	fi
+}
+
+function is_in_group {
+	if ! groups "$1" | grep -E "\s$2(\s|$)"; then
+		usermod -aG $2 $1
+	fi
+}

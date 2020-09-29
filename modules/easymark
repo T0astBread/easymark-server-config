@@ -2,21 +2,14 @@
 source framework/install
 
 
-if ! getent group easymark > /dev/null; then
-	print_changed "easymark group does not exist - creating..."
-	groupadd --system easymark
-fi
-
-if ! id -u easymark; then
-	print_changed "easymark user does not exist - creating..."
-	useradd --system \
-		--gid easymark \
-		--create-home \
-		--home-dir /var/lib/easymark \
-		--shell /usr/sbin/nologin \
-		--comment "EasyMark server" \
-		easymark
-fi
+group_exists easymark --system
+user_exists easymark \
+	--system \
+	--gid easymark \
+	--create-home \
+	--home-dir /var/lib/easymark \
+	--shell /usr/sbin/nologin \
+	--comment "EasyMark server"
 
 
 if [[ ! -f easymark.tar ]]; then

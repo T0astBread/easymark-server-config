@@ -1,21 +1,14 @@
 #!/bin/bash
 source framework/install
 
-if ! getent group caddy > /dev/null; then
-	print_changed "caddy group does not exist - creating..."
-	groupadd --system caddy
-fi
-
-if ! id -u caddy; then
-	print_changed "caddy user does not exist - creating..."
-	useradd --system \
-		--gid caddy \
-		--create-home \
-		--home-dir /var/lib/caddy \
-		--shell /usr/sbin/nologin \
-		--comment "Caddy web server" \
-		caddy
-fi
+group_exists caddy --system
+user_exists caddy \
+	--system \
+	--gid caddy \
+	--create-home \
+	--home-dir /var/lib/caddy \
+	--shell /usr/sbin/nologin \
+	--comment "Caddy web server"
 
 if ! which caddy > /dev/null; then
 	scripts/upgrade-caddy
