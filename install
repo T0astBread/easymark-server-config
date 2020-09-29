@@ -30,6 +30,10 @@ if [[ $EUID -eq 0 ]]; then
 
 	chsh -s /usr/bin/fish admin
 
+	cp -f etc/crontab /etc/crontab
+	chown root:root /etc/crontab
+	chmod u=rw,go=r /etc/crontab
+
 	modules/sshd
 	modules/cloud-storage-backups
 	modules/autoupgrade
