@@ -2,3 +2,4 @@
 .transfer
 easymark.tar
 .last-deployment-hash
+.backup-service-account-keyfile.json
