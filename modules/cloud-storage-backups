@@ -36,3 +36,6 @@ Activating $BACKUP_GOOGLE_SERVICE_ACCOUNT..."
 	sudo -u backup-gcp gcloud auth activate-service-account --key-file=/home/backup-gcp/$SERVICE_ACCOUNT_KEYFILE
 	rm /home/backup-gcp/$SERVICE_ACCOUNT_KEYFILE
 fi
+
+mkdir -p /etc/cron.daily
+cp -f $(pwd)/scripts/back-up-to-cloud-storage /etc/cron.daily/
