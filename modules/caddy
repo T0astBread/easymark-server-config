@@ -14,7 +14,7 @@ if ! which caddy > /dev/null; then
 	scripts/upgrade-caddy
 fi
 
-cp scripts/upgrade-caddy /etc/cron.daily
+cp -f scripts/upgrade-caddy /etc/cron.daily
 
 mkdir -p /etc/caddy
 if differ etc/caddy/caddy.service /etc/systemd/system/caddy.service; then
