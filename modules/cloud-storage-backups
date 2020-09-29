@@ -1,0 +1,38 @@
+#!/bin/bash
+set -euo pipefail
+source framework/install
+source .env
+
+# em-backup should be used instead of backup
+# since backup is already used for different
+# purposes in a default Debian installation
+group_exists em-backup --system
+user_exists backup-gcp \
+	--system \
+	--gid em-backup \
+	--create-home \
+	--shell /usr/sbin/nologin
+is_in_group backup-gcp easymark
+
+SERVICE_ACCOUNT_KEYFILE=".backup-service-account-keyfile.json"
+if [[ ! -f $SERVICE_ACCOUNT_KEYFILE ]]; then
+	print_changed "$SERVICE_ACCOUNT_KEYFILE is missing"
+	exit 1
+fi
+chmod u=r,og= $SERVICE_ACCOUNT_KEYFILE
+
+active_service_account="$(sudo -u backup-gcp gcloud config get-value account)"
+if [[ "$active_service_account" = "$BACKUP_GOOGLE_SERVICE_ACCOUNT" ]]; then
+	echo "Google service account is activated"
+else
+	print_changed "Google service account is not activated
+
+Wanted: $BACKUP_GOOGLE_SERVICE_ACCOUNT
+Actual: $active_service_account
+
+Activating $BACKUP_GOOGLE_SERVICE_ACCOUNT..."
+	cp $SERVICE_ACCOUNT_KEYFILE /home/backup-gcp
+	chown backup-gcp:em-backup /home/backup-gcp/$SERVICE_ACCOUNT_KEYFILE
+	sudo -u backup-gcp gcloud auth activate-service-account --key-file=/home/backup-gcp/$SERVICE_ACCOUNT_KEYFILE
+	rm /home/backup-gcp/$SERVICE_ACCOUNT_KEYFILE
+fi

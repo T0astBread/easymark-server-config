@@ -1,0 +1,7 @@
+#!/bin/sh
+backup_folder="$(hostname)_$(date +%F_%H:%M:%S)"
+tar cf /home/backup-gcp/caddy.tar /var/lib/caddy/.local/share/caddy
+sudo -u backup-gcp sh -c "
+gsutil cp /var/lib/easymark/database.json \"gs://em_veskur_backups/$backup_folder/\"
+gsutil mv ~/caddy.tar \"gs://em_veskur_backups/$backup_folder/\"
+"
