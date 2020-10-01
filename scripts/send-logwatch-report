@@ -62,7 +62,7 @@ cURL output
 "
 echo "$mail" | sudo -u smtp curl \
 	--ssl-reqd smtp://$SMTP_HOST:$SMTP_PORT \
-	--mail-from emo@veskur.at \
+	--mail-from $LOGWATCH_EMAIL_SENDER_ADDRESS \
 	--mail-rcpt $LOGWATCH_EMAIL_RECIPIENT_ADDRESS \
 	--upload-file - \
 	--netrc \
