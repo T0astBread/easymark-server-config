@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+set -euo pipefail
+source .env
 
 # houly, daily etc.
 level="$1"
@@ -7,6 +9,6 @@ backup_folder="${level}_$(date +%F_%H:%M:%S)"
 
 tar cf /home/backup-gcp/caddy.tar /var/lib/caddy/.local/share/caddy
 sudo -u backup-gcp sh -c "
-gsutil cp -s $storage_class /var/lib/easymark/database.json \"gs://em_veskur_backups/$backup_folder/\"
-gsutil mv -s $storage_class ~/caddy.tar \"gs://em_veskur_backups/$backup_folder/\"
+gsutil cp -s $storage_class /var/lib/easymark/database.json \"gs://$BACKUP_BUCKET/$backup_folder/\"
+gsutil mv -s $storage_class ~/caddy.tar \"gs://$BACKUP_BUCKET/$backup_folder/\"
 "
