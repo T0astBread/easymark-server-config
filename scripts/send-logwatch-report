@@ -1,15 +1,15 @@
 #!/bin/bash
 source .env
+MISC_FILES_DIR=/var/lib/regular-logwatch
 
 echo "=====
 BEGIN of run on $(date)
 
 "
 
-LAST_RUN_TIME_FILE=/var/lib/regular-logwatch/last-run-time
 last_run_time="3 days ago"
-if [[ -f $LAST_RUN_TIME_FILE ]]; then
-	last_run_time="$(head -c -1 < $LAST_RUN_TIME_FILE)"
+if [[ -f $MISC_FILES_DIR/last-run-time ]]; then
+	last_run_time="$(head -c -1 < $MISC_FILES_DIR/last-run-time)"
 fi
 echo "Last run time: $last_run_time
 ---"
@@ -66,12 +66,14 @@ echo "$mail" | sudo -u smtp curl \
 
 
 # For debugging
-echo "$mail" > /var/lib/regular-logwatch/last-sent-message
+echo "$mail" > $MISC_FILES_DIR/last-sent-message
+chmod u=rw,og= $MISC_FILES_DIR/last-sent-message
 
 
 if [[ "$1" = "--set-last-run-time" ]]; then
 	echo "---
 
 	Recording last run time"
-	date > $LAST_RUN_TIME_FILE
+	date > $MISC_FILES_DIR/last-run-time
+	chmod u=rw,og= $MISC_FILES_DIR/last-run-time
 fi
