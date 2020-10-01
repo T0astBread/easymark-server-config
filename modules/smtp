@@ -11,7 +11,10 @@ user_exists smtp \
 	--home-dir /var/lib/smtp \
 	--shell /usr/sbin/nologin
 
+NETRC_FILE=/var/lib/smtp/.netrc
 echo "machine $SMTP_HOST
 login $SMTP_USERNAME
 password $SMTP_PASSWORD
-" > /var/lib/smtp/.netrc
+" > $NETRC_FILE
+chown smtp:smtp $NETRC_FILE
+chmod u=r,og= $NETRC_FILE
