@@ -14,6 +14,10 @@ fi
 echo "Last run time: $last_run_time
 ---"
 
+# last run time is captured before logwatch is run so that there
+# is no possibility for a gap
+new_last_run_time="$(date)"
+
 
 function improve_logwatch_css {
 	sed 's/font-size: 10px/font-size: 1.2em; color: black; line-height: .75em/' \
@@ -74,6 +78,6 @@ if [[ "$1" = "--set-last-run-time" ]]; then
 	echo "---
 
 	Recording last run time"
-	date > $MISC_FILES_DIR/last-run-time
+	echo "$new_last_run_time" > $MISC_FILES_DIR/last-run-time
 	chmod u=rw,og= $MISC_FILES_DIR/last-run-time
 fi
