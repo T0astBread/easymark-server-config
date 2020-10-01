@@ -42,7 +42,7 @@ mail="From: \"EasyMark\" <$LOGWATCH_EMAIL_SENDER_ADDRESS>
 To: \"$LOGWATCH_EMAIL_RECIPIENT_NAME\" <$LOGWATCH_EMAIL_RECIPIENT_ADDRESS>
 Subject: Logwatch-Report
 MIME-Version: 1.0
-Content-Type: text/html
+Content-Type: text/html;charset=\"utf-8\"
 
 $(logwatch --range "since $last_run_time" \
 	--format html \
