@@ -38,11 +38,27 @@ echo "
 Logwatch output
 ---
 "
+mp_boundary="multipart-boundary-$(base64 < /dev/urandom | head -c 5)"
 mail="From: \"EasyMark\" <$LOGWATCH_EMAIL_SENDER_ADDRESS>
 To: \"$LOGWATCH_EMAIL_RECIPIENT_NAME\" <$LOGWATCH_EMAIL_RECIPIENT_ADDRESS>
 Subject: Logwatch-Report
 MIME-Version: 1.0
+Content-Type: multipart/alternative;boundary="$mp_boundary"
+
+--$mp_boundary
+Content-Type: text/plain;charset=\"utf-8\"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+
+$(logwatch --range "since $last_run_time" \
+	--detail med \
+	| unix2dos)
+
+--$mp_boundary
 Content-Type: text/html;charset=\"utf-8\"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
 $(logwatch --range "since $last_run_time" \
 	--format html \
@@ -52,6 +68,8 @@ $(logwatch --range "since $last_run_time" \
 	| improve_logwatch_css \
 	| grep . \
 	| unix2dos)
+
+--$mp_boundary--
 
 "
 
