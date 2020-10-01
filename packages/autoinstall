@@ -5,6 +5,7 @@ git
 tree
 rsync
 netcat-openbsd
+moreutils
 
 # Services
 ufw
