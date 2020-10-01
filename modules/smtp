@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+source framework/install
+source .env
+
+group_exists smtp
+user_exists smtp \
+	--system \
+	--gid smtp \
+	--create-home \
+	--home-dir /var/lib/smtp \
+	--shell /usr/sbin/nologin
+
+echo "machine $SMTP_HOST
+login $SMTP_USERNAME
+password $SMTP_PASSWORD
+" > /var/lib/smtp/.netrc

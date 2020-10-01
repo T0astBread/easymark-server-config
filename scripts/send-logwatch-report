@@ -1,0 +1,77 @@
+#!/bin/bash
+source .env
+
+echo "=====
+BEGIN of run on $(date)
+
+"
+
+LAST_RUN_TIME_FILE=/var/lib/regular-logwatch/last-run-time
+last_run_time="3 days ago"
+if [[ -f $LAST_RUN_TIME_FILE ]]; then
+	last_run_time="$(head -c -1 < $LAST_RUN_TIME_FILE)"
+fi
+echo "Last run time: $last_run_time
+---"
+
+
+function improve_logwatch_css {
+	sed 's/font-size: 10px/font-size: 1.2em; color: black; line-height: .75em/' \
+		| sed 's/background: #6D88AD/background: #dedede/' \
+		| sed 's/}/} * {border: none;}/'
+}
+
+function split_html_lines {
+	# to avoid exceeding line length limits in email firewalls
+	sed -E 's/&nbsp;|>/\0\n/g'
+}
+
+function trim_leading_space {
+	sed -E 's/^\s+//g'
+}
+
+echo "
+Logwatch output
+---
+"
+mail="From: \"EasyMark\" <$LOGWATCH_EMAIL_SENDER_ADDRESS>
+To: \"$LOGWATCH_EMAIL_RECIPIENT_NAME\" <$LOGWATCH_EMAIL_RECIPIENT_ADDRESS>
+Subject: Logwatch-Report
+MIME-Version: 1.0
+Content-Type: text/html
+
+$(logwatch --range "since $last_run_time" \
+	--format html \
+	--detail med \
+	| split_html_lines \
+	| trim_leading_space \
+	| improve_logwatch_css \
+	| grep . \
+	| unix2dos)
+
+"
+
+
+echo "
+cURL output
+---
+"
+echo "$mail" | sudo -u smtp curl \
+	--ssl-reqd smtp://$SMTP_HOST:$SMTP_PORT \
+	--mail-from emo@veskur.at \
+	--mail-rcpt $LOGWATCH_EMAIL_RECIPIENT_ADDRESS \
+	--upload-file - \
+	--netrc \
+	--verbose
+
+
+# For debugging
+echo "$mail" > /var/lib/regular-logwatch/last-sent-message
+
+
+if [[ "$1" = "--set-last-run-time" ]]; then
+	echo "---
+
+	Recording last run time"
+	date > $LAST_RUN_TIME_FILE
+fi

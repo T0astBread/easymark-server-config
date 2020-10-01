@@ -1,0 +1,9 @@
+[Unit]
+Description=regular Logwatch reports over email
+
+[Timer]
+OnCalendar=Mon,Thu 18:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

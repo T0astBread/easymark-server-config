@@ -1,0 +1,10 @@
+[Unit]
+Description=Logwatch report over email
+After=network.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/home/admin/config/scripts/send-logwatch-report --set-last-run-time
+WorkingDirectory=/home/admin/config

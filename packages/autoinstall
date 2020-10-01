@@ -6,9 +6,11 @@ tree
 rsync
 netcat-openbsd
 moreutils
+dos2unix
 
 # Services
 ufw
+logwatch
 
 # EasyMark
 openjdk-11-jre-headless

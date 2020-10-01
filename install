@@ -35,9 +35,11 @@ if [[ $EUID -eq 0 ]]; then
 	chmod u=rw,go=r /etc/crontab
 
 	modules/sshd
+	modules/smtp
 	modules/cloud-storage-backups
 	modules/autoupgrade
 	modules/ufw
+	modules/logwatch
 	modules/caddy
 	print_footer $H_STARTUP_SERVICES
 else

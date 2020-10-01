@@ -1,0 +1,31 @@
+#!/bin/bash
+set -euo pipefail
+source framework/install
+
+mkdir -p /var/lib/regular-logwatch
+
+if differ etc/logwatch.timer /etc/systemd/system/logwatch.timer; then
+	print_changed "logwatch.timer has changed - restarting..."
+	cp -f etc/logwatch.timer /etc/systemd/system
+	systemctl daemon-reload
+	if systemctl is-active logwatch.timer; then
+		systemctl restart logwatch.timer
+	fi
+fi
+if differ etc/logwatch.service /etc/systemd/system/logwatch.service; then
+	print_changed "logwatch.service has changed - updating..."
+	cp -f etc/logwatch.service /etc/systemd/system
+	systemctl daemon-reload
+fi
+
+echo -n "logwatch.timer "
+if ! systemctl is-active logwatch.timer; then
+	print_changed "logwatch.timer is not active - starting..."
+	systemctl start logwatch.timer
+fi
+
+echo -n "logwatch.timer "
+if ! systemctl is-enabled logwatch.timer; then
+	print_changed "logwatch.timer is not enabled on startup - enabling..."
+	systemctl enable logwatch.timer
+fi
