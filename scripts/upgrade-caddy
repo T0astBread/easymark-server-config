@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 curl "https://caddyserver.com/api/download?os=linux&arch=amd64" -o /tmp/caddy
 chmod +x /tmp/caddy
 [[ -f /etc/systemd/system/caddy.service ]] && systemctl stop caddy.service
