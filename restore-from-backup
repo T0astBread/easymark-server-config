@@ -42,7 +42,7 @@ echo "Restoring EasyMark database..."
 rm -rf /var/lib/easymark/database.json
 cp database.json /var/lib/easymark/database.json
 chown easymark:easymark /var/lib/easymark/database.json
-chmod u=rw,og= /var/lib/easymark/database.json
+chmod u=rw,g=r,o= /var/lib/easymark/database.json
 systemctl start easymark.service
 print_success "EasyMark database restored"
 
