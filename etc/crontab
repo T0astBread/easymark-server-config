@@ -21,5 +21,5 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
 #
 
-22 *	* * *	root	cd / && /home/admin/config/scripts/back-up-to-cloud-storage hourly standard
-36 3	* * *	root	cd / && /home/admin/config/scripts/back-up-to-cloud-storage daily nearline
+22 *	* * *	root	cd /home/admin/config && /home/admin/config/scripts/back-up-to-cloud-storage hourly standard
+36 3	* * *	root	cd /home/admin/config && /home/admin/config/scripts/back-up-to-cloud-storage daily nearline
