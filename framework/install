@@ -118,7 +118,7 @@ function user_exists {
 	creation_options="${@:2}"
 	if ! id -u "$user_name" > /dev/null; then
 		print_changed "$user_name user does not exist - creating..."
-		useradd $creation_options "$user_name"
+		eval useradd $creation_options "$user_name"
 	fi
 }
 
@@ -127,7 +127,7 @@ function group_exists {
 	creation_options="${@:2}"
 	if ! getent group "$group_name" > /dev/null; then
 		print_changed "$group_name group does not exist - creating..."
-		groupadd $creation_options "$group_name"
+		eval groupadd $creation_options "$group_name"
 	fi
 }
 

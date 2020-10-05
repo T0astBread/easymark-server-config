@@ -8,7 +8,7 @@ user_exists caddy \
 	--create-home \
 	--home-dir /var/lib/caddy \
 	--shell /usr/sbin/nologin \
-	--comment "Caddy web server"
+	--comment "\"Caddy web server\""
 
 if ! which caddy > /dev/null; then
 	scripts/upgrade-caddy

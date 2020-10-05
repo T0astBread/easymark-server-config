@@ -9,7 +9,7 @@ user_exists easymark \
 	--create-home \
 	--home-dir /var/lib/easymark \
 	--shell /usr/sbin/nologin \
-	--comment "EasyMark server"
+	--comment "\"EasyMark server\""
 
 
 if [[ ! -f easymark.tar ]]; then
