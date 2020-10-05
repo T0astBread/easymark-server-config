@@ -1,0 +1,63 @@
+#!/bin/bash
+set -euo pipefail
+tput init
+
+function print_err {
+	tput bold
+	tput setaf 1
+	echo "$1"
+	tput sgr0
+}
+
+function print_success {
+	tput bold
+	echo "$1"
+	tput sgr0
+}
+
+
+if [[ $EUID -ne 0 ]]; then
+	print_err "Must be run as root (sudo)"
+	exit 1
+fi
+
+function check_file {
+	if [[ ! -f "./$1" ]]; then
+		print_err "$1 does not exist in the current directory
+
+Copy the database.json and caddy.tar files in the
+config directory and run the script from there"
+		exit 1
+	fi
+}
+
+check_file database.json
+check_file caddy.tar
+
+
+systemctl stop caddy.service
+systemctl stop easymark.service
+
+echo "Restoring EasyMark database..."
+rm -rf /var/lib/easymark/database.json
+cp database.json /var/lib/easymark/database.json
+chown easymark:easymark /var/lib/easymark/database.json
+chmod u=rw,og= /var/lib/easymark/database.json
+systemctl start easymark.service
+print_success "EasyMark database restored"
+
+echo "Restoring Caddy files..."
+rm -rf /var/lib/caddy/.local/share/caddy /var/lib/caddy/caddy.tar
+cp caddy.tar /var/lib/caddy
+cd /var/lib/caddy
+tar xf caddy.tar
+mv var/lib/caddy/.local/share/caddy .local/share/caddy
+chown --recursive caddy:caddy .local/share/caddy
+chmod --recursive u=rwx,og= .local/share/caddy
+systemctl start caddy.service
+rm -rf var caddy.tar
+cd -
+print_success "Caddy files restored"
+
+echo
+echo "You can now delete the database.json and caddy.tar files"
