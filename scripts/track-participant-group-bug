@@ -1,0 +1,24 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+BASE_DIR=/home/admin/participant-group-bug
+mkdir -p $BASE_DIR
+
+AMOUNT_FILE=$BASE_DIR/last-amount
+[[ ! -f $AMOUNT_FILE ]] && echo "0" > $AMOUNT_FILE
+
+LOG_FILE=$BASE_DIR/log
+[[ ! -f $LOG_FILE ]] && echo "cur;prev;timestamp;notes" > $LOG_FILE
+
+curr_amount=$(jq ".participants | map(select(has(\"warning\") or has(\"group\") or has(\"notes\"))) | length" < /var/lib/easymark/database.json)
+prev_amount=$(cat $AMOUNT_FILE)
+if [[ "$curr_amount" != "$prev_amount" ]]; then
+	echo "AMOUNT HAS CHANGED"
+	echo "$curr_amount;$prev_amount;$(date);" >> $LOG_FILE
+	echo "$curr_amount" > $AMOUNT_FILE
+else
+	echo "No change in amount"
+fi
+
+chown --recursive admin:admin $BASE_DIR
