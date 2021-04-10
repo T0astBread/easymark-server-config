@@ -41,6 +41,7 @@ if [[ $EUID -eq 0 ]]; then
 	modules/ufw
 	modules/logwatch
 	modules/caddy
+	modules/swapfile
 	print_footer $H_STARTUP_SERVICES
 else
 	echo "Not executing root section - not root"

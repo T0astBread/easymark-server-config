@@ -1,0 +1,19 @@
+#!/bin/bash
+source framework/install
+set -euo pipefail
+
+
+SWAPFILE=/var/lib/swapfile
+if [[ ! -f $SWAPFILE ]]; then
+	print_changed "$SWAPFILE does not exist - creating..."
+	dd if=/dev/zero of=$SWAPFILE bs=1M count=4096
+	chmod u=rw,go= $SWAPFILE
+	mkswap $SWAPFILE
+	swapon $SWAPFILE
+fi
+
+FSTAB_LINE="$SWAPFILE none swap defaults 0 0"
+if ! grep -q "$FSTAB_LINE" < /etc/fstab; then
+	print_changed "Line for swap file not in fstab - adding..."
+	echo "$FSTAB_LINE" >> /etc/fstab
+fi
