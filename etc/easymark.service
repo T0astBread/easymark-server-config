@@ -14,6 +14,7 @@ Restart=always
 ExecStart=/usr/local/lib/easymark/bin/easymark
 WorkingDirectory=/var/lib/easymark
 Environment="TZ=$TIMEZONE"
+OOMScoreAdjust=-1000
 
 [Install]
 WantedBy=multi-user.target
