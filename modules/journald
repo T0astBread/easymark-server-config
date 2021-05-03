@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+source framework/install
+
+LOCAL_FILE=etc/journald.conf
+ETC_FILE=/etc/systemd/journald.conf
+if differ $LOCAL_FILE $ETC_FILE; then
+	print_changed "journald.conf has changed - updating..."
+	cp $LOCAL_FILE $ETC_FILE
+	systemctl restart systemd-journald
+fi

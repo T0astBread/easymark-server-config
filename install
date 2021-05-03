@@ -35,6 +35,7 @@ if [[ $EUID -eq 0 ]]; then
 	chmod u=rw,go=r /etc/crontab
 
 	modules/sshd
+	modules/journald
 	modules/smtp
 	modules/cloud-storage-backups
 	modules/autoupgrade
